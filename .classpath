@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="src/agape/agape-0.4.jar"/>
+	<classpathentry kind="lib" path="src/commons-math3-3.5 2/commons-math3-3.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/commons-math3-3.5 2/commons-math3-3.5.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/guava-r09.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/jung-algorithms-2.0.1.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/jung-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/jung-graph-impl-2.0.1.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/jung-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/jung-visualization-2.0.1.jar"/>
+	<classpathentry kind="lib" path="src/agape/dependencies-0.2/mascoptLib.jar"/>
+	<classpathentry kind="lib" path="/Users/lizramsey/Desktop/MASON/mason.18.jar"/>
+	<classpathentry kind="lib" path="/Users/lizramsey/Documents/workspace/JaipurABM/src/agape/agapeCL-0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/lizramsey/Documents/workspace/JaipurABM/src/agape/editor-0.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
