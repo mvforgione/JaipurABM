@@ -45,10 +45,6 @@ public class JaipurResidentialWUOriginal extends SimState{
 	public JaipurResidentialWUOriginal(long seed){
 		super(seed);
 	}
-
-
-	
-	
 	
 	
 	public void start() {
