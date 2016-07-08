@@ -46,6 +46,7 @@ public class JaipurResidentialWUOriginal extends SimState{
 		super(seed);
 	}
 	
+	public void testTinkering(){}
 	
 	public void start() {
 
