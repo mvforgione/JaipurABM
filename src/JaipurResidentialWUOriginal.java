@@ -16,7 +16,7 @@ import ec.util.MersenneTwisterFast;
 
 public class JaipurResidentialWUOriginal extends SimState{
 	
-	
+	public static String testingWUUpdate;
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed
 	public static int jobs = 3;
@@ -46,20 +46,6 @@ public class JaipurResidentialWUOriginal extends SimState{
 		super(seed);
 	}
 	
-	public void testTinkering(){}
-	
-	public void start() {
-
-		DataCollector dc = new DataCollector();
-		double totalDemand = 0.0;
-		schedule.clear();
-		int[][] populationArray = scanInputCSV.popScan(populationCSVfile);
-		super.start();
-		createAgentPopulation(populationArray);
-		schedule.scheduleRepeating(0.1, dc); //puts DataCollector on schedule
-		}
-
-
 	public static void main(String[] args) {
 		
 		SimState state = new JaipurResidentialWUOriginal(System.currentTimeMillis()); // MyModel is our SimState subclass
@@ -82,6 +68,16 @@ public class JaipurResidentialWUOriginal extends SimState{
 		generateTxtFile(txtFileInput);
 		System.out.println("all runs finished, exiting");
 		System.exit(0);
+	}
+	
+	public void start() {
+		DataCollector dc = new DataCollector();
+		double totalDemand = 0.0;
+		schedule.clear();
+		int[][] populationArray = scanInputCSV.popScan(populationCSVfile);
+		super.start();
+		createAgentPopulation(populationArray);
+		schedule.scheduleRepeating(0.1, dc); //puts DataCollector on schedule
 	}
 
 	public static int getCurrentJob(){
