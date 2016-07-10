@@ -39,7 +39,7 @@ public class DataCollector implements Steppable{
 	
 	public void step(SimState state) {
 	    JaipurResidentialWUOriginal jaipurWaterUse = (JaipurResidentialWUOriginal) state;
-	    System.out.println("num agents? : " + numAgents);
+	    System.out.println("from data collector--num agents? : " + numAgents);
 	    double ratio = getConserverRatioThisTimeStep();
 //	    System.out.println("total# conservers: " + numConservers +  " total# agents: " + numAgents +
 //	    		"     ratio: " + ratio);
@@ -75,11 +75,11 @@ public class DataCollector implements Steppable{
 //		return numConservers;
 //	}
 //	
-//	public int getNumAgents(List<HHwPlumbing> allHouseholdsThisStep){
-//		int numAgents = 0;
-//		for (HHwPlumbing hh: allHouseholdsThisStep){
-//			numAgents++;
-//		}
-//		return numAgents;
-//	}
+	public int getNumAgents(List<HHwPlumbingOriginal> allHouseholdsThisStep){
+		int numAgents = 0;
+		for (HHwPlumbingOriginal hh: allHouseholdsThisStep){
+			numAgents++;
+		}
+		return numAgents;
+	}
 }

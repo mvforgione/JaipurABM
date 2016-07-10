@@ -19,7 +19,7 @@ public class JaipurResidentialWUOriginal extends SimState{
 	public static int testInt = 900;
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed
-	public static int jobs = 3;
+	public static int jobs = 1;
 	//public static int numStepsInMain = 10;
 	public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
 	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
@@ -45,8 +45,6 @@ public class JaipurResidentialWUOriginal extends SimState{
 	public JaipurResidentialWUOriginal(long seed){
 		super(seed);
 	}
-	
-	public void testTinkering(){}
 	
 	public void start() {
 
@@ -94,6 +92,7 @@ public class JaipurResidentialWUOriginal extends SimState{
 	public HHwPlumbingOriginal createNewAgent(int[][] populationArray, double timeStep) {
 		HHwPlumbingOriginal hh = new HHwPlumbingOriginal(vertexNumber, timeStep);   //passes that property array to the new agents
 		vertexNumber++;
+		//edited out beecause of redundancy; does this still work?
 		houseHoldAgents.add(hh);                    //Add household agent object to our household agent list
 		return hh;
 	}

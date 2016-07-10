@@ -107,7 +107,7 @@ public class JaipurResidentialWUSmallWorldNetwork extends JaipurResidentialWUOri
 				//System.out.println(" num newAgents: " + getNumNewAgents(populationArray, double_i));
 				HHwPlumbingSmallWorldNetwork newAgent = (HHwPlumbingSmallWorldNetwork) createNewAgent(populationArray, double_i);
 				HHwPlumbingSmallWorldNetwork.houseHoldAgents.add(newAgent);
-				System.out.println("testing pre schedule " + this.vertexNumber);
+				//System.out.println("testing pre schedule " + this.vertexNumber);
 				schedule.scheduleRepeating(double_i, newAgent);
 
 			}

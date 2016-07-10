@@ -114,7 +114,7 @@ import sim.engine.Steppable;
 	        }
 //	        talkToNetwork();
 //	        calculateUtilityandUpdateConsumption();   
-	        System.out.println("any steps down here?");
+//	        System.out.println("any steps down here?");
 	    }
 	    
 	    public void setNetworkSize(){

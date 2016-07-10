@@ -81,12 +81,13 @@ public class HHwPlumbingOriginal implements Steppable {
         isConserver = HHwPlumbingOriginal.generateConservationStatus();
         vertexName	= "vert" + vertexNumber;
 //        //TODO: remove this after testing
-//        maxNumConnections = 5;
-//        maxNumFamilyMembers = 4;
-//        maxNumCloseFriends = 2;
-        maxNumConnections = ValueGenerator.getValueWithRange(48.0, 27.0, 11, 185);//max num connections/social network size
-        maxNumFamilyMembers = ValueGenerator.getValueWithRange(5.48, 1.8, 0, 10);//family network, from latrine study
-        maxNumCloseFriends = ValueGenerator.getValueWithRange(2.64, 2.16, 0, 10);//friend network, from latrine study
+        maxNumConnections = 10;
+        maxNumFamilyMembers = 4;
+        maxNumCloseFriends = 2;
+        maxNumAcquaintances = 10;
+//        maxNumConnections = ValueGenerator.getValueWithRange(48.0, 27.0, 11, 185);//max num connections/social network size
+//        maxNumFamilyMembers = ValueGenerator.getValueWithRange(5.48, 1.8, 0, 10);//family network, from latrine study
+//        maxNumCloseFriends = ValueGenerator.getValueWithRange(2.64, 2.16, 0, 10);//friend network, from latrine study
 
 
         uuid = UUID.randomUUID();                //set uuid
@@ -127,6 +128,7 @@ public class HHwPlumbingOriginal implements Steppable {
     }
 
     public void assignAcquaintancesToAgentAtTimeStep(double timeStep) {
+    	//System.out.println("max num acquaintances: " + maxNumAcquaintances);
         if (acquaintances.size() == maxNumAcquaintances) {
             return;
         }
@@ -180,10 +182,14 @@ public class HHwPlumbingOriginal implements Steppable {
             // Do not match agent to itself - loop to next agent
             // Do not match agent to a friend that has max amount of acquaintances already - loop to next agent
             if (this.uuid == hhFam.uuid || hhFam.acquaintances.size() == hhFam.maxNumAcquaintances) {
-                continue;
+//                System.out.println("hits third if loop; hhFam.uuid = " + hhFam.uuid + " acq. size = " + hhFam.acquaintances.size() + 
+//                		" maxNumAcq = " + hhFam.maxNumAcquaintances);
+            	continue;
             }
+//            System.out.println("why quit here?");
             //If agent is already an acquaintance or family member, do not add to network again - loop to next agent
             if (doesAcquaintanceshipExist(hhFam.uuid) == true || doesFamilyRelationshipExist(hhFam.uuid) == true) {
+            	//System.out.println("acq already: " + doesAcquaintanceshipExist(hhFam.uuid) + " fam already: " + doesFamilyRelationshipExist(hhFam.uuid));
                 continue;
             }
             //If agent already is a close friend, loop to next agent
@@ -192,6 +198,7 @@ public class HHwPlumbingOriginal implements Steppable {
             }
 
             // Get random integer between 1 and 100. If less than or equal to friendship probability, add each friend to each other's friends arraylist
+            
             if (rng.nextInt(100) <= PROBABILITY_OF_FRIENDSHIP) {
                 respectedFamilyMembers.add(hhFam);
                 hhFam.acquaintances.add(this);
@@ -409,6 +416,10 @@ public class HHwPlumbingOriginal implements Steppable {
     
     public void talkToNetwork(){
     	int num = rng.nextInt(3) + 1;
+//    	System.out.println("rng: " + num);
+//    	System.out.println("fam members empty: " + respectedFamilyMembers.isEmpty());
+//    	System.out.println("friends empty:" + closeFriends.isEmpty());
+//    	System.out.println("acquaintances empty: " + acquaintances.isEmpty());
     	//if num is 1 and fam is empty or if num is 2 and friends are empty or num is 3 and acq is empty, pick a new num
     	while (num == 1 && respectedFamilyMembers.isEmpty() || num == 2 && closeFriends.isEmpty() || num == 3 && acquaintances.isEmpty()){
     		num = rng.nextInt(3) + 1;
@@ -418,38 +429,34 @@ public class HHwPlumbingOriginal implements Steppable {
     	if (num == 1){
     		//communicate with family
 //    		System.out.println("fam spoken to before talk for " + this.vertexName + ": ");
-//    		for (HHwPlumbing2 hh: famAlreadySpokenTo){
-//    			System.out.print(hh.vertexName + " ");
+//    		for (HHwPlumbingOriginal hh: famAlreadySpokenTo){
+//    			System.out.println(hh.vertexName + " ");
 //    		}
 //    		System.out.println();
     		talk(respectedFamilyMembers, famAlreadySpokenTo);
-//    		System.out.println("fam spoken to after talk for " + this.vertexName + ": ");
-//    		for (HHwPlumbing2 hh: famAlreadySpokenTo){
-//    			System.out.print(hh.vertexName + " ");
-//    		}
 //    		System.out.println();
     	}
     	else if (num == 2){
     		//communicate with friends
 //    		System.out.println("friends spoken to before talk for " + this.vertexName + ": ");
-//    		for (HHwPlumbing2 hh: friendsAlreadySpokenTo){
-//    			System.out.print(hh.vertexName + " ");
+//    		for (HHwPlumbingOriginal hh: friendsAlreadySpokenTo){
+//    			System.out.println(hh.vertexName + " ");
 //    		}
     		talk(closeFriends, friendsAlreadySpokenTo);
 //    		System.out.println("friends spoken to after talk for " + this.vertexName + ": ");
-//    		for (HHwPlumbing2 hh: friendsAlreadySpokenTo){
-//    			System.out.print(hh.vertexName + " ");
+//    		for (HHwPlumbingOriginal hh: friendsAlreadySpokenTo){
+//    			System.out.println(hh.vertexName + " ");
 //    		}
     	}
     	else if (num == 3){
-//    		//communicate with acq
+    		//communicate with acq
 //    		System.out.println("acq spoken to before talk for " + this.vertexName + ": ");
-//    		for (HHwPlumbing2 hh: acqAlreadySpokenTo){
+//    		for (HHwPlumbingOriginal hh: acqAlreadySpokenTo){
 //    			System.out.print(hh.vertexName + " ");
 //    		}
     		talk(acquaintances, acqAlreadySpokenTo);
 //    		System.out.println("acq spoken to after talk for " + this.vertexName + ": ");
-//    		for (HHwPlumbing2 hh: acqAlreadySpokenTo){
+//    		for (HHwPlumbingOriginal hh: acqAlreadySpokenTo){
 //    			System.out.print(hh.vertexName + " ");
 //    		}
         }
@@ -460,6 +467,7 @@ public class HHwPlumbingOriginal implements Steppable {
     }
     
     public void talk(ArrayList<HHwPlumbingOriginal> wholeNetwork, ArrayList<HHwPlumbingOriginal> networkTalkedToAlready){
+    	//System.out.println("talk function entered");
     	//select random member of arrayList, then, if he doesn't already exist in the talkedTo list, add him. if he does, return and let the next agent go
     	ArrayList<HHwPlumbingOriginal> shuffledNetwork = wholeNetwork;
     	Collections.shuffle(shuffledNetwork);
@@ -529,8 +537,8 @@ public class HHwPlumbingOriginal implements Steppable {
         int friendDelta = calculateDelta(this.independentLikelihoodDFInstall, this.friendLikelihoodDFInstall);
         if(isConserver){
     	   double randNum = rng.nextDouble(true, true);
-    	   System.out.println("conservers:");
-    	   System.out.println("fam ratio: " + RatioFamConservers + " friend ratio: " + RatioFriendConservers + "acq ratio: " + RatioAcqConservers);
+    	  // System.out.println("conservers:");
+    	  // System.out.println("fam ratio: " + RatioFamConservers + " friend ratio: " + RatioFriendConservers + "acq ratio: " + RatioAcqConservers);
     	   double utilStay = UtilityFunctionOriginal.calculateUtilityForConserverStayingConserver(RatioFamConservers,
 							  famDelta, RatioFriendConservers, friendDelta, RatioAcqConservers);
     	   double utilChange = UtilityFunctionOriginal.calculateUtilityForConserverBecomingNonConserver(RatioFamNonConservers,
