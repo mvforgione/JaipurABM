@@ -22,7 +22,7 @@ import sim.engine.Steppable;
  */
 
 public class HHwPlumbingOriginal implements Steppable {
-	public String testingMerge;
+	public String simplifyingCode;
     public static double percentConservers = 5;
     private static String textFileInput;
     
