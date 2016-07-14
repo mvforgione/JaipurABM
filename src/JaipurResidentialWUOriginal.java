@@ -16,6 +16,7 @@ import ec.util.MersenneTwisterFast;
 
 public class JaipurResidentialWUOriginal extends SimState{
 	
+	
 	public static String testingWUUpdate;
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed

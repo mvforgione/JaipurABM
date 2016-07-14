@@ -23,6 +23,12 @@ import edu.uci.ics.jung.graph.util.Pair;
 
 
 public class JaipurResidentialWUSmallWorldNetwork extends JaipurResidentialWUOriginal{
+
+	public JaipurResidentialWUSmallWorldNetwork(long seed) {
+		super(seed);
+		// TODO Auto-generated constructor stub
+	}
+	/*
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed
 	public static int jobs = 3;
@@ -121,9 +127,9 @@ public class JaipurResidentialWUSmallWorldNetwork extends JaipurResidentialWUOri
 	}
 	
 	
-	/*
+	/**
     Create number of agents at [n] time step and store in agent array.
-     */
+     ** /
 	public HHwPlumbingOriginal createNewAgent(int[][] populationArray, double timeStep) {
 		HHwPlumbingSmallWorldNetwork hh = new HHwPlumbingSmallWorldNetwork(vertexNumber, timeStep);   //passes that property array to the new agents
 		vertexNumber++;
@@ -183,7 +189,7 @@ public class JaipurResidentialWUSmallWorldNetwork extends JaipurResidentialWUOri
 		}
 	}
 
-
+*/
 
 }
 

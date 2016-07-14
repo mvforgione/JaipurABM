@@ -34,52 +34,51 @@ public class DataCollector implements Steppable{
 	public static int numConservers;
 
 	public DataCollector(){
-	
-	}
-	
-	public void step(SimState state) {
-	    JaipurResidentialWUOriginal jaipurWaterUse = (JaipurResidentialWUOriginal) state;
-	    System.out.println("num agents? : " + numAgents);
-	    double ratio = getConserverRatioThisTimeStep();
-//	    System.out.println("total# conservers: " + numConservers +  " total# agents: " + numAgents +
-//	    		"     ratio: " + ratio);
 
-	    updateTxtFile(JaipurResidentialWUOriginal.getCurrentJob() + "\t" + state.schedule.getTime() + "\t" +
-	    			modelPopulation + "\t" + numAgents + "\t" + ratio +"\t"+ CumulativeDemand +"\n");
-	    System.out.println(state.schedule.getTime() + "\t" + CumulativeDemand);
-	    numAgents = 0;
-	    CumulativeDemand = 0.0;
-	    modelPopulation = 0;
-	    numConservers = 0;
-	    ratio = 0;
 	}
-	
+
+	public void step(SimState state) {
+		JaipurResidentialWUOriginal jaipurWaterUse = (JaipurResidentialWUOriginal) state;
+		double ratio = getConserverRatioThisTimeStep();
+		//	    System.out.println("total# conservers: " + numConservers +  " total# agents: " + numAgents +
+		//	    		"     ratio: " + ratio);
+
+		updateTxtFile(JaipurResidentialWUOriginal.getCurrentJob() + "\t" + state.schedule.getTime() + "\t" +
+				modelPopulation + "\t" + numAgents + "\t" + ratio +"\t"+ CumulativeDemand +"\n");
+		System.out.println(state.schedule.getTime() + "\t" + CumulativeDemand);
+		numAgents = 0;
+		CumulativeDemand = 0.0;
+		modelPopulation = 0;
+		numConservers = 0;
+		ratio = 0;
+	}
+
 	public static void updateTxtFile(String s){
 		txtFileInput = txtFileInput + s;
 	}
-	
+
 	public double getConserverRatioThisTimeStep(){
 		double numConserversDub = (double)(numConservers);
 		double numAgentsDub = (double)(numAgents);
 		double ratio = numConserversDub/numAgentsDub;
 		return ratio;
 	}
-	
-//	public int getNumConservers(List<HHwPlumbing> allHouseholdsThisStep){
-//		int numConservers = 0;
-//		for(HHwPlumbing hh : allHouseholdsThisStep){
-//			if(hh.isConserver){
-//				numConservers ++;
-//			}
-//		}
-//		return numConservers;
-//	}
-//	
-//	public int getNumAgents(List<HHwPlumbing> allHouseholdsThisStep){
-//		int numAgents = 0;
-//		for (HHwPlumbing hh: allHouseholdsThisStep){
-//			numAgents++;
-//		}
-//		return numAgents;
-//	}
+
+	//	public int getNumConservers(List<HHwPlumbing> allHouseholdsThisStep){
+	//		int numConservers = 0;
+	//		for(HHwPlumbing hh : allHouseholdsThisStep){
+	//			if(hh.isConserver){
+	//				numConservers ++;
+	//			}
+	//		}
+	//		return numConservers;
+	//	}
+	//	
+	//	public int getNumAgents(List<HHwPlumbing> allHouseholdsThisStep){
+	//		int numAgents = 0;
+	//		for (HHwPlumbing hh: allHouseholdsThisStep){
+	//			numAgents++;
+	//		}
+	//		return numAgents;
+	//	}
 }

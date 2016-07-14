@@ -20,8 +20,32 @@ import sim.engine.Steppable;
 	 *         approximates behaviors of households with indoor plumbing
 	 */
 
-	public class HHwPlumbingSmallWorldNetwork extends HHwPlumbingOriginal {//implements Steppable {
+	public class HHwPlumbingSmallWorldNetwork extends HHParent {
+
+		@Override
+		protected void prepareStep(SimState state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setNetworkSize() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void talkToNetwork() {
+			// TODO Auto-generated method stub
+			talk(null, null);
+		}
 		
+		
+		
+		
+		
+		//implements Steppable {
+		/*
 	    public static double percentConservers = 5;
 	    private static String textFileInput;
 	    
@@ -483,7 +507,7 @@ import sim.engine.Steppable;
 	    		}
 	    	}
 	    	networkTalkedToAlready.add(randHH);
-	    }*/
+	    }* /
 	    
 	    //bracketed out to test new utility function--this is the initial code
 //	    public void calculateUtilityandUpdateConsumption(){
@@ -573,7 +597,7 @@ import sim.engine.Steppable;
 	    		delta = 0;
 	    	}
 	    	return delta;
-	    }
+	    }*/
 	}
 
 
