@@ -67,10 +67,26 @@ public class HHwPlumbingOriginal extends HHParent {
 
 	protected void prepareStep(SimState state){
 		setNetworkSize();
-
+		System.out.println("agent " + this.vertexName + " maxNumConnections: " + this.maxNumConnections
+				+ " maxNumAcq: " + this.maxNumAcquaintances + " maxNumFam: " + this.maxNumFamilyMembers
+				+ " maxNumFriends: " + this.maxNumCloseFriends);
 		assignFamilyToAgentAtTimeStep(state.schedule.getTime());
 		assignCloseFriendsAtTimeStep(state.schedule.getTime());
 		assignAcquaintancesToAgentAtTimeStep(state.schedule.getTime());
+		System.out.println("acquaintances for " + this.vertexName + ":");
+		for (HHParent hh: acquaintances){
+			System.out.print(hh.vertexName + " ");
+		}
+		System.out.println();
+		System.out.println("friends for " + this.vertexName + ":");
+		for (HHParent hh: closeFriends){
+			System.out.print(hh.vertexName + " ");
+		}
+		System.out.println();
+		System.out.println("family for " + this.vertexName + ":");
+		for (HHParent hh: respectedFamilyMembers){
+			System.out.print(hh.vertexName + " ");
+		}
 	}
 
 	/*public void step(SimState state) {
@@ -144,7 +160,7 @@ public class HHwPlumbingOriginal extends HHParent {
 			// Get random integer between 1 and 100. If less than or equal to friendship probability, add each friend to each other's friends arraylist
 			if (rng.nextInt(100) <= PROBABILITY_OF_FRIENDSHIP) {
 				closeFriends.add(hhFriend);
-				hhFriend.respectedFamilyMembers.add(this);
+				hhFriend.closeFriends.add(this);
 			}
 		}
 	}

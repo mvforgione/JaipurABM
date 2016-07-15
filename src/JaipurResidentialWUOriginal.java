@@ -20,9 +20,9 @@ public class JaipurResidentialWUOriginal extends SimState{
 	public static String testingWUUpdate;
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed
-	public static int jobs = 3;
-	//public static int numStepsInMain = 10;
-	public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
+	public static int jobs = 2;
+	public static int numStepsInMain = 10;
+	//public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
 	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
 	public static int currentJob = 0;
 	public static double percentageConserverCurrent = 0.0;
@@ -64,6 +64,8 @@ public class JaipurResidentialWUOriginal extends SimState{
 				}
 			while(state.schedule.getSteps() < numStepsInMain);
 			state.finish();
+			HHParent.houseHoldAgents.clear();
+			vertexNumber = 1;
 		}
 		txtFileInput = txtFileInput + DataCollector.txtFileInput;
 		generateTxtFile(txtFileInput);

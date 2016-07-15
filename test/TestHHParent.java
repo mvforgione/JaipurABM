@@ -19,5 +19,13 @@ public class TestHHParent {
 		//assertEquals(6, num);
 		assertTrue(num <= 9);
 	}
+	
+
+	@Test
+	public void testGenerateNumDualFlushToilets2() {
+		int num = HHParent.generateNumDualFlushToilets();
+		//assertEquals(6, num);
+		assertTrue(num <= 9);
+	}	
 
 }

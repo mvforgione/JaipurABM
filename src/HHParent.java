@@ -35,7 +35,7 @@ public abstract class HHParent implements Steppable {
 	public int householdSize;
 	public boolean isConserver;
 	public boolean hasDualFlushToilets;
-	private String vertexName;
+	protected String vertexName;
 	public double monthlyDemand;
 	private double personalUtility;
 	private double probabilityOfConserving;
@@ -60,7 +60,7 @@ public abstract class HHParent implements Steppable {
 
 
 	/**
-	 * Default constructor. Currently does nothing.
+	 * Default constructor
 	 */
 	public HHParent(){}
 
@@ -80,12 +80,12 @@ public abstract class HHParent implements Steppable {
 		isConserver = HHParent.generateConservationStatus();
 		vertexName	= "vert" + vertexNumber;
 		//        //TODO: remove this after testing
-		//        maxNumConnections = 5;
-		//        maxNumFamilyMembers = 4;
-		//        maxNumCloseFriends = 2;
-		maxNumConnections = ValueGenerator.getValueWithRange(48.0, 27.0, 11, 185);//max num connections/social network size
-		maxNumFamilyMembers = ValueGenerator.getValueWithRange(5.48, 1.8, 0, 10);//family network, from latrine study
-		maxNumCloseFriends = ValueGenerator.getValueWithRange(2.64, 2.16, 0, 10);//friend network, from latrine study
+		        maxNumConnections = 8;
+		        maxNumFamilyMembers = 4;
+		        maxNumCloseFriends = 2;
+//		maxNumConnections = ValueGenerator.getValueWithRange(48.0, 27.0, 11, 185);//max num connections/social network size
+//		maxNumFamilyMembers = ValueGenerator.getValueWithRange(5.48, 1.8, 0, 10);//family network, from latrine study
+//		maxNumCloseFriends = ValueGenerator.getValueWithRange(2.64, 2.16, 0, 10);//friend network, from latrine study
 
 		uuid = UUID.randomUUID(); //set uuid
 		timeStepBorn = timeStep;
@@ -93,7 +93,9 @@ public abstract class HHParent implements Steppable {
 
 	public void step(SimState state) {
 		prepareStep(state);
-
+		for (HHParent hh: houseHoldAgents){
+			System.out.println("step fxn in HHparent test, agent " + hh.vertexName);
+		}
 		//sets up the simstate
 		//JaipurResidentialWUOriginal jaipurWaterUse = (JaipurResidentialWUOriginal) state; 
 
