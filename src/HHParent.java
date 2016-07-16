@@ -93,9 +93,6 @@ public abstract class HHParent implements Steppable {
 
 	public void step(SimState state) {
 		prepareStep(state);
-		for (HHParent hh: houseHoldAgents){
-			System.out.println("step fxn in HHparent test, agent " + hh.vertexName);
-		}
 		//sets up the simstate
 		//JaipurResidentialWUOriginal jaipurWaterUse = (JaipurResidentialWUOriginal) state; 
 
@@ -137,17 +134,6 @@ public abstract class HHParent implements Steppable {
 			demand = householdSize * 100 * 30;
 		}
 		return demand;
-	}
-
-	public static int generateK() {
-		int k = 0;
-		while (k == 0 || k > 100) {
-			PoissonDistribution householdDist = new PoissonDistribution(9.2);    //from Kerala mobile phone study
-			//for testing only
-			//PoissonDistribution householdDist = new PoissonDistribution(3);
-			k = householdDist.sample();
-		}
-		return k;
 	}
 
 	public int getNumDualFlushToilets() {

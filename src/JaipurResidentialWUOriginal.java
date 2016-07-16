@@ -174,15 +174,5 @@ public class JaipurResidentialWUOriginal extends SimState{
 }
 
 
-//CODE SCRAPS
-//UndirectedGraphFactoryForStringInteger factory = new UndirectedGraphFactoryForStringInteger();
-//Graph<String, Integer> socialNetwork = null;
-//try {
-//	socialNetwork = RandGenerator.generateWattsStrogatzSWGraph(factory, factory.vertexFactory, factory.edgeFactory, 5, meanK, 0.5);
-//	//Visualization.showGraph(socialNetwork, new CircleLayout<String,Integer>(
-//	//		socialNetwork));
-//} catch (Exception e) {
-//	e.printStackTrace();
-//	System.exit(1);
-//}	
+
 	

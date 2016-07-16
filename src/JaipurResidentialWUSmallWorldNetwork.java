@@ -9,11 +9,17 @@ import ec.util.MersenneTwisterFast;
 import java.util.Iterator;
 
 import org.apache.commons.collections15.Factory;
+import org.apache.commons.math3.distribution.PoissonDistribution;
 
 import agape.generators.RandGenerator;
+import agape.tutorials.DirectedGraphFactoryForStringInteger;
+import agape.tutorials.UndirectedGraphFactoryForStringInteger;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph; 
+import edu.uci.ics.jung.graph.event.GraphEvent.Edge;
+import edu.uci.ics.jung.graph.event.GraphEvent.Vertex;
 import edu.uci.ics.jung.graph.util.Pair;
+import edu.uci.ics.jung.visualization.util.VertexShapeFactory;
 
 /**
  *
@@ -23,176 +29,53 @@ import edu.uci.ics.jung.graph.util.Pair;
 
 
 public class JaipurResidentialWUSmallWorldNetwork extends JaipurResidentialWUOriginal{
+	private double meanK = 0.5;
+
+	static int edgeCount = 0;
+
 
 	public JaipurResidentialWUSmallWorldNetwork(long seed) {
 		super(seed);
 		// TODO Auto-generated constructor stub
 	}
-	/*
-	public static String txtFileInput;
-	//public static int jobs = 25; //number of runs needed
-	public static int jobs = 3;
-	public static int numStepsInMain = 10;
-	//public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
-	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
-	public static int currentJob = 0;
-	public static double percentageConserverCurrent = 0.0;
-	public static long discretization = (long) 1.0;
-	public static int population;
-	public static int numCurrentAgents = 0;
-	public static double averageHouseholdSize = 5.1;
-	//public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/AgentPopulation.csv";
-	public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/PopTest.csv";
-	//public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/utilfxntest_cons_5_withComms_with_delta_a_7_b_3_value_test_3May2016.txt";
-	public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/testingFile.txt";
-	public static int numMonthsInYear = 12;
-	private static double rewiringP = 0.109; 	//from calculations based on mobile phone study & Barrat & Weigt paper
-	private static int vertexNumber = 1;
-	public static List<HHwPlumbingSmallWorldNetwork> houseHoldAgents = new ArrayList<HHwPlumbingSmallWorldNetwork>();
-	private static List<HHwPlumbingSmallWorldNetwork> newAgentsAtThisTimeStep = new ArrayList<HHwPlumbingSmallWorldNetwork>();
-	//public Continuous2D jaipurcity = new Continuous2D(discretization, northSouthBounds, eastWestBounds);
 
 
-	public JaipurResidentialWUSmallWorldNetwork(long seed){
-		super(seed);
+
+	public static int generateK() {
+		int k = 0;
+		while (k == 0 || k > 100) {
+			PoissonDistribution householdDist = new PoissonDistribution(9.2);    //from Kerala mobile phone study
+			//for testing only
+			//PoissonDistribution householdDist = new PoissonDistribution(3);
+			k = householdDist.sample();
+		}
+		return k;
 	}
 
+
+	protected void prepareStep(SimState state){
+		setUpSocialNetwork();
+	}
+
+	private void setUpSocialNetwork(){
+		//needs to be use population data from parent to identify numbers of members
+		//then needs to calculate or call static variables for Kleinberg network setup
+		//then needs to call a method to set up the factories and such nonsense for the network, right?
+		//then needs to call a method to fill in social network array
+		//and somewhere in here it needs to make sure that we don't remake networks at every time step, but instead
+		//      only append to them somewhere
+
+	}
+
+//	private Factory createVertexFactory(){
+//		@SuppressWarnings("rawtypes")
+//		Factory<Vertex> vertexFactory =
+//		return vertexFactory;
+//	}
 
 	
-	public void start() {
-		DataCollector dc = new DataCollector();
-		double totalDemand = 0.0;
-		schedule.clear();
-		int[][] populationArray = scanInputCSV.popScan(populationCSVfile);
-		super.start();
-		createAgentPopulation(populationArray);
-		schedule.scheduleRepeating(0.1, dc); //puts DataCollector on schedule
-		//System.out.println("testing start method");
-		}
-
-
-	public static void main(String[] args) {
-		
-		SimState state = new JaipurResidentialWUSmallWorldNetwork(System.currentTimeMillis()); // MyModel is our SimState subclass
-		for(int job = 0; job < jobs; job++){
-			state.schedule.clear();
-			state.setJob(job);
-			currentJob++;
-			state.start();
-			txtFileInput = "Utility Function Values\ta value\t" + UtilityFunctionOriginal.a + "\ta prime value\t" + UtilityFunctionOriginal.aPrime +
-					"\tb value\t" + UtilityFunctionOriginal.b + "\tb prime value\t" + UtilityFunctionOriginal.bPrime + "\n\n";
-			txtFileInput =  txtFileInput + "Job Number\tTime Step\tModel Population\t# of Agents\tRatio of Conservers to Total Agents\tTotal Demand\n";		//create .txt file for outputting results
-			do
-				if (!state.schedule.step(state)) {
-					break;
-				}
-			while(state.schedule.getSteps() < numStepsInMain);
-			state.finish();
-		}
-		txtFileInput = txtFileInput + DataCollector.txtFileInput;
-		generateTxtFile(txtFileInput);
-		System.out.println("all runs finished, exiting");
-		System.exit(0);
-	}
-
-	public static int getCurrentJob(){
-		return currentJob;
-	}
-
-
-
-	public void createAgentPopulation(int [][] populationArray){
-		
-		int numTimeSteps = populationArray.length;
-		for (int i = 0; i < numTimeSteps; i++){											//for each time step i
-			newAgentsAtThisTimeStep.clear();											//remove all old agents from new agent array
-			double double_i = (double) (i);
-			population = populationArray[i][1];
-			int numNewAgents = getNumNewAgents(populationArray, double_i);
-			for (int j = 0; j < numNewAgents; j++){	//create number of new agents required
-				//System.out.println(" num newAgents: " + getNumNewAgents(populationArray, double_i));
-				HHwPlumbingSmallWorldNetwork newAgent = (HHwPlumbingSmallWorldNetwork) createNewAgent(populationArray, double_i);
-				HHwPlumbingSmallWorldNetwork.houseHoldAgents.add(newAgent);
-				System.out.println("testing pre schedule " + this.vertexNumber);
-				schedule.scheduleRepeating(double_i, newAgent);
-
-			}
-		}
-		
-	}
-	
-	public RandGenerator createNetwork(){
-		RandGenerator newGenerator = new RandGenerator();
-		return newGenerator;
-	}
-	
-	
-	/**
-    Create number of agents at [n] time step and store in agent array.
-     ** /
-	public HHwPlumbingOriginal createNewAgent(int[][] populationArray, double timeStep) {
-		HHwPlumbingSmallWorldNetwork hh = new HHwPlumbingSmallWorldNetwork(vertexNumber, timeStep);   //passes that property array to the new agents
-		vertexNumber++;
-		houseHoldAgents.add(hh);                    //Add household agent object to our household agent list
-		return hh;
-	}
-
-	
-	public static double getCumulativeDemand(){
-		double totalDemand = 0.0;
-		for(HHwPlumbingSmallWorldNetwork hh: houseHoldAgents){
-			totalDemand = totalDemand + hh.monthlyDemand;
-		}
-		return totalDemand;
-	}
-
-	public int getNumNewAgents(int[][] population, double timeStep){
-		int intTimeStep = (int) timeStep;
-		int popCurrentTimeStep;
-		int popPreviousTimeStep;
-		int currentNumHouseholds;
-		int previousNumHouseholds;
-		int numNewHouseholds;
-		int numTotalTimeSteps = population.length;
-		if(intTimeStep < 0 || intTimeStep > numTotalTimeSteps - 1){ //red flag that schedule isn't running correctly
-			//may cause errors when running schedule if you don't keep tabs on iterations
-			System.out.println("incorrect time step");
-			return -1;
-		}
-		popCurrentTimeStep = population[intTimeStep][1];
-		double curNumHouseholds = popCurrentTimeStep / averageHouseholdSize;
-		int currentNumHouseholdsInt = (int) (curNumHouseholds);
-		if (intTimeStep > 1 || intTimeStep == 1){
-			popPreviousTimeStep = population[intTimeStep - 1][1];
-			double prevNumHouseholds = popPreviousTimeStep / averageHouseholdSize;
-			double numNewHouseholdDouble = curNumHouseholds - prevNumHouseholds;
-			numNewHouseholds = (int) (numNewHouseholdDouble);
-			return numNewHouseholds;
-		}else{
-			numNewHouseholds = currentNumHouseholdsInt;
-			return numNewHouseholds;
-		}
-	}
-
-	private static void generateTxtFile(String input){
-		for (int i = 0; i < jobs; i ++){	
-			PrintStream outPrint = null;
-			try{
-			//	outputFileName = outputFileName;
-				outPrint = new PrintStream(new File(outputFileName));
-			}
-			catch (FileNotFoundException e){
-				System.out.println(outputFileName + " (No such file or directory)");
-				System.exit(1);
-			}
-			outPrint.println(input);
-		}
-	}
-
-*/
-
 }
 
 
 
-	
+
