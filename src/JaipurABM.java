@@ -1,8 +1,15 @@
 
 
 import java.io.*;
-
 import java.util.*;
+
+import org.apache.commons.collections15.Factory;
+import org.graphstream.algorithm.generator.Generator;
+import org.graphstream.algorithm.generator.WattsStrogatzGenerator;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
 
 import sim.engine.*;
 import ec.util.MersenneTwisterFast;
@@ -14,10 +21,10 @@ import ec.util.MersenneTwisterFast;
  */
 
 
-public class JaipurResidentialWUOriginal extends SimState{
+public class JaipurABM extends SimState{
 	
 	
-	public static String testingWUUpdate;
+	public static int numTotalAgents = 0;
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed
 	public static int jobs = 2;
@@ -26,31 +33,31 @@ public class JaipurResidentialWUOriginal extends SimState{
 	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
 	public static int currentJob = 0;
 	public static double percentageConserverCurrent = 0.0;
-	public static long discretization = (long) 1.0;
 	public static int population;
 	public static int numCurrentAgents = 0;
 	public static double averageHouseholdSize = 5.1;
 	//public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/AgentPopulation.csv";
 	public static String populationCSVfile= "/Users/lizramsey/Documents/workspace/JaipurABM/src/PopTest.csv";
-	public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/utilfxntest_cons_5_withComms_with_delta_a_7_b_3_value_test_3May2016.txt";
-	//public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/testingFile.txt";
+	//public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/utilfxntest_cons_5_withComms_with_delta_a_7_b_3_value_test_3May2016.txt";
+	public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/testingFile.txt";
 	public static int numMonthsInYear = 12;
-	private static double rewiringP = 0.109; 	//from calculations based on mobile phone study & Barrat & Weigt paper
 	private static int vertexNumber = 1;
 
-	public static List<HHwPlumbingOriginal> houseHoldAgents = new ArrayList<HHwPlumbingOriginal>();
-	private static List<HHwPlumbingOriginal> newAgentsAtThisTimeStep = new ArrayList<HHwPlumbingOriginal>();
-	//public Continuous2D jaipurcity = new Continuous2D(discretization, northSouthBounds, eastWestBounds);
+	public static List<HHwPlumbingOriginal> OriginalNetwork = new ArrayList<HHwPlumbingOriginal>();
+	public static List<HHwPlumbingOriginal> newAgentsAtThisTimeStepOriginalNetwork = new ArrayList<HHwPlumbingOriginal>();
+
+	public static List<HHwPlumbingSmallWorldNetwork> KleinbergSmallWorldlNetwork = new ArrayList<HHwPlumbingSmallWorldNetwork>();
+	public static List<HHwPlumbingSmallWorldNetwork> newAgentsAtThisTimeStepKleinbergSmallWorldNetwork = new ArrayList<HHwPlumbingSmallWorldNetwork>();
 
 	
-	public JaipurResidentialWUOriginal(long seed){
+	public JaipurABM(long seed){
 		super(seed);
 	}
 	
 	public static void main(String[] args) {
-		
-		SimState state = new JaipurResidentialWUOriginal(System.currentTimeMillis()); // MyModel is our SimState subclass
+		SimState state = new JaipurABM(System.currentTimeMillis());
 		for(int job = 0; job < jobs; job++){
+			System.out.println("JOB NUMBER " + job);
 			state.schedule.clear();
 			state.setJob(job);
 			currentJob++;
@@ -64,8 +71,6 @@ public class JaipurResidentialWUOriginal extends SimState{
 				}
 			while(state.schedule.getSteps() < numStepsInMain);
 			state.finish();
-			HHParent.houseHoldAgents.clear();
-			vertexNumber = 1;
 		}
 		txtFileInput = txtFileInput + DataCollector.txtFileInput;
 		generateTxtFile(txtFileInput);
@@ -73,6 +78,10 @@ public class JaipurResidentialWUOriginal extends SimState{
 		System.exit(0);
 	}
 	
+	public static void runModel(){
+
+	}
+
 	public void start() {
 		DataCollector dc = new DataCollector();
 		double totalDemand = 0.0;
@@ -93,14 +102,14 @@ public class JaipurResidentialWUOriginal extends SimState{
 	public HHwPlumbingOriginal createNewAgent(int[][] populationArray, double timeStep) {
 		HHwPlumbingOriginal hh = new HHwPlumbingOriginal(vertexNumber, timeStep);   //passes that property array to the new agents
 		vertexNumber++;
-		houseHoldAgents.add(hh);                    //Add household agent object to our household agent list
+		OriginalNetwork.add(hh);                    //Add household agent object to our household agent list
 		return hh;
 	}
 
-	public void createAgentPopulation(int [][] populationArray){
+	protected void createAgentPopulation(int [][] populationArray){
 		int numTimeSteps = populationArray.length;
 		for (int i = 0; i < numTimeSteps; i++){											//for each time step i
-			newAgentsAtThisTimeStep.clear();											//remove all old agents from new agent array
+			newAgentsAtThisTimeStepOriginalNetwork.clear();											//remove all old agents from new agent array
 			double double_i = (double) (i);
 			population = populationArray[i][1];
 			int numNewAgents = getNumNewAgents(populationArray, double_i);
@@ -109,6 +118,8 @@ public class JaipurResidentialWUOriginal extends SimState{
 				HHwPlumbingOriginal newAgent = createNewAgent(populationArray, double_i);
 				HHwPlumbingOriginal.houseHoldAgents.add(newAgent);
 				schedule.scheduleRepeating(double_i, newAgent);
+				numTotalAgents++;
+				System.out.println("numTotalAgents test: " + numTotalAgents);
 			}
 		}
 		
@@ -117,13 +128,13 @@ public class JaipurResidentialWUOriginal extends SimState{
 	
 	public static double getCumulativeDemand(){
 		double totalDemand = 0.0;
-		for(HHwPlumbingOriginal hh: houseHoldAgents){
+		for(HHwPlumbingOriginal hh: OriginalNetwork){
 			totalDemand = totalDemand + hh.monthlyDemand;
 		}
 		return totalDemand;
 	}
 
-	public int getNumNewAgents(int[][] population, double timeStep){
+	protected int getNumNewAgents(int[][] population, double timeStep){
 		int intTimeStep = (int) timeStep;
 		int popCurrentTimeStep;
 		int popPreviousTimeStep;
@@ -151,7 +162,7 @@ public class JaipurResidentialWUOriginal extends SimState{
 		}
 	}
 
-	private static void generateTxtFile(String input){
+	protected static void generateTxtFile(String input){
 		for (int i = 0; i < jobs; i ++){	
 			PrintStream outPrint = null;
 			try{
@@ -166,13 +177,8 @@ public class JaipurResidentialWUOriginal extends SimState{
 		}
 	}
 
-	public static List getHouseHoldAgents(){
-		return houseHoldAgents;
-	}
-
-
-}
-
 
 
 	
+	
+}

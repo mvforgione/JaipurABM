@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
+
+import org.apache.commons.collections15.Factory;
 import org.apache.commons.math3.distribution.PoissonDistribution;
+
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import ec.util.MersenneTwisterFast;
@@ -19,7 +22,6 @@ public abstract class HHParent implements Steppable {
 	protected static final int PROBABILITY_OF_FRIENDSHIP = 100; //Probability an agent will befriend another agent.
 	protected static MersenneTwisterFast rng = new MersenneTwisterFast();    //Random number generator for cycling agents during friendship assignment.
 
-	public String simplifyingCodeTrack;
 
 	//end uses and values
 	//TODO: figure out initializing values from the literature later
@@ -29,7 +31,7 @@ public abstract class HHParent implements Steppable {
 	private String neighborhood;
 	private int independentLikelihoodDFInstall;
 	private int friendLikelihoodDFInstall;
-	private int familyLikelihoodDFInstall;
+	protected int familyLikelihoodDFInstall;
 	private int phedLikelihoodDFInstall;
 	private int religiousOfficialLikelihoodDFInstall;
 	public int householdSize;
@@ -256,4 +258,36 @@ public abstract class HHParent implements Steppable {
 		}
 		return delta;
 	}
+	
+//	private void setUpSocialNetwork(){
+//		Factory<MyLink> edgeFactory = new Factory<MyLink>();
+//	}
+//	
+//	
+//	class MyNode {
+//		int id;
+//		public MyNode(int id) {
+//			this.id = id;
+//		}
+//		public String toString() {
+//			return "V"+id;
+//		}        
+//	}
+//
+//	class MyLink {
+//		double capacity;
+//		double weight;
+//		int id;
+//
+//		public MyLink(double weight, double capacity) {
+//			this.id = edgeCount++;
+//			this.weight = weight;
+//			this.capacity = capacity;
+//		} 
+//
+//		public String toString() {
+//			return "E"+id;
+//		}	
+//
+//	}
 }

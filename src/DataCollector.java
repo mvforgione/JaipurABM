@@ -38,12 +38,12 @@ public class DataCollector implements Steppable{
 	}
 
 	public void step(SimState state) {
-		JaipurResidentialWUOriginal jaipurWaterUse = (JaipurResidentialWUOriginal) state;
+		JaipurABM jaipurWaterUse = (JaipurABM) state;
 		double ratio = getConserverRatioThisTimeStep();
 		//	    System.out.println("total# conservers: " + numConservers +  " total# agents: " + numAgents +
 		//	    		"     ratio: " + ratio);
 
-		updateTxtFile(JaipurResidentialWUOriginal.getCurrentJob() + "\t" + state.schedule.getTime() + "\t" +
+		updateTxtFile(JaipurABM.getCurrentJob() + "\t" + state.schedule.getTime() + "\t" +
 				modelPopulation + "\t" + numAgents + "\t" + ratio +"\t"+ CumulativeDemand +"\n");
 		System.out.println(state.schedule.getTime() + "\t" + CumulativeDemand);
 		numAgents = 0;
