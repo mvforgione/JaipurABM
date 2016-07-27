@@ -33,9 +33,10 @@ public class DataCollector implements Steppable{
 	public static int modelPopulation;
 	public static int numConservers;
 
-	public DataCollector(){
-
-	}
+	/**
+	 * Constructor
+	 */
+	public DataCollector(){}
 
 	public void step(SimState state) {
 		JaipurABM jaipurWaterUse = (JaipurABM) state;
@@ -64,21 +65,4 @@ public class DataCollector implements Steppable{
 		return ratio;
 	}
 
-	//	public int getNumConservers(List<HHwPlumbing> allHouseholdsThisStep){
-	//		int numConservers = 0;
-	//		for(HHwPlumbing hh : allHouseholdsThisStep){
-	//			if(hh.isConserver){
-	//				numConservers ++;
-	//			}
-	//		}
-	//		return numConservers;
-	//	}
-	//	
-	//	public int getNumAgents(List<HHwPlumbing> allHouseholdsThisStep){
-	//		int numAgents = 0;
-	//		for (HHwPlumbing hh: allHouseholdsThisStep){
-	//			numAgents++;
-	//		}
-	//		return numAgents;
-	//	}
 }
