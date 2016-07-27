@@ -27,7 +27,7 @@ public class JaipurABM extends SimState{
 	//"original" is for network broken down by friends, acquaintances, and families, selected randomly
 	//"kleinbergSmallWorldNetwork" is obviously for Kleinberg Small World
 	//add strings here as you write more code
-	private static String graphStructure = "kleinberg small world network";
+	private static String graphStructure = "Kleinberg small world network";
 
 	public static int numTotalAgents = 0;
 	public static String txtFileInput;
