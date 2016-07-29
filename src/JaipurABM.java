@@ -29,6 +29,8 @@ public class JaipurABM extends SimState{
 	//add strings here as you write more code
 	private static String graphStructure = "Kleinberg small world network";
 
+	
+
 	public static int numTotalAgents = 0;
 	public static String txtFileInput;
 	//public static int jobs = 25; //number of runs needed
@@ -46,10 +48,13 @@ public class JaipurABM extends SimState{
 	//public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/utilfxntest_cons_5_withComms_with_delta_a_7_b_3_value_test_3May2016.txt";
 	public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/testingFile.txt";
 	public static int numMonthsInYear = 12;
-	private static int vertexNumber = 1;
+	private static int vertexNumber = 0;
+	//don't forget to account for this in documentation; numAgents will say 200, for example, but there will really be 201
 
-	public static List<Household> network = new ArrayList<Household>();
-	public static List<Household> newAgentsAtThisTimeStepOriginalNetwork = new ArrayList<Household>();
+	public static List<Household> network;
+	public static List<Household> newAgentsAtThisTimeStepOriginalNetwork;
+	ArrayList<Household> neighborArray;
+	Household neighborHousehold;
 
 
 
@@ -74,6 +79,11 @@ public class JaipurABM extends SimState{
 				}
 			while(state.schedule.getSteps() < numStepsInMain);
 			state.finish();
+			numTotalAgents = 0;
+			vertexNumber = 0;
+			//network.clear();
+			//newAgentsAtThisTimeStepOriginalNetwork.clear();
+			//Household.clearAcquaintances();
 		}
 		txtFileInput = txtFileInput + DataCollector.txtFileInput;
 		generateTxtFile(txtFileInput);
@@ -108,10 +118,6 @@ public class JaipurABM extends SimState{
 		schedule.scheduleRepeating(0.1, dc); //puts DataCollector on schedule
 	}
 
-	//	public static int getCurrentJob(){
-	//		return currentJob;
-	//	}
-
 	/*
     Create number of agents at [n] time step and store in agent array.
 	 */
@@ -138,9 +144,7 @@ public class JaipurABM extends SimState{
 				numTotalAgents++;
 				System.out.println("numTotalAgents test: " + numTotalAgents);
 			}
-
 		}
-
 	}
 
 
@@ -204,7 +208,6 @@ public class JaipurABM extends SimState{
 	}
 
 	public Graph generateKleinbergSmallWorldSocialNetwork(){
-		System.out.println("hits KSW");
 		Graph graph = new SingleGraph("JaipurResidents");
 		if(numTotalAgents > 1){
 			Generator gen = new WattsStrogatzGenerator(numTotalAgents, 2, 0.5);//n number of agents, num connections k, rewiring probability beta
@@ -214,7 +217,6 @@ public class JaipurABM extends SimState{
 				sleep();
 			}
 			gen.end();
-
 			graph.display(false);
 			return graph;
 		}
@@ -223,21 +225,12 @@ public class JaipurABM extends SimState{
 			System.exit(0);
 			return graph;
 		}
-//		for (Node n: graph){
-//			System.out.println("Text vertex: " + n.toString());
-//			Collection<Edge> edgeCollection = n.getLeavingEdgeSet();
-//			System.out.println(edgeCollection);
-//			//System.out.println(Edge.getOpposite(n));
-//			for (Edge edge: edgeCollection){
-//				System.out.println(edge.getOpposite(n));
-//			}
-//		}
 	}
 
 	protected void sleep() {
 		try { Thread.sleep(300); } catch (Exception e) {}
 	}
-	
+
 	private void createSocialNetwork(Graph graph){
 		//go through all households in the model
 		for (Household hh : network){
@@ -245,58 +238,59 @@ public class JaipurABM extends SimState{
 			String agentName = hh.getVertexName();
 			//for this given node in the graph, find the corresponding agent
 			for (Node n: graph){
-				String nodePseudonym = "vert" + (n.getIndex()+1);
-				//System.out.println("testing name for nodes: " +nodePseudonym)
-				
+				String nodePseudonym = "vert" + (n.getIndex());
 				//if the node corresponds with the agent, then we get all the agent's connections and store them in the acq array
 				if(agentName.equals(nodePseudonym)){
 					hh.acquaintances = findNeighborArray(n);
 				}
 
 			}
-			
+
 		}
 	}
 
-	
 	private ArrayList<Household> findNeighborArray(Node node){
-		ArrayList<Household> neighborArray = new ArrayList<Household>(); 
+		neighborArray = new ArrayList<Household>();
+		neighborHousehold = new Household();
 		Collection<Edge> edgeCollection = node.getLeavingEdgeSet();
 		for (Edge edge: edgeCollection){
-			System.out.println("edge.getOpposite " + edge.getOpposite(node));
-			Household neighborHousehold = findVertexHouseholdEquivalent(edge.getOpposite(node));
-			neighborArray.add(neighborHousehold);
-		}
-		if(neighborArray.isEmpty()){
-			System.out.println("Error in neighbor array");
-			return null;
+			Node oppositeNode = edge.getOpposite(node);
+			System.out.println("node " + node.getIndex() + "'s edge.getOpposite " + oppositeNode.getIndex());
+			//find corresponding household in overall model
+			for (Household hh: network){
+				String comparedName = hh.getVertexName();
+				String vertexName = "vert" + oppositeNode;
+				if(!comparedName.equalsIgnoreCase(vertexName)){
+					continue;
+				}
+				else if(comparedName.equalsIgnoreCase(vertexName)){
+					UUID uuid = hh.getUUID();
+					for (Household potentialAcq : neighborArray){
+						if(uuid == potentialAcq.uuid){
+							continue;
+						}			
+					}
+					for (Household potentialAcq : hh.acquaintances){
+						if(uuid == potentialAcq.uuid){
+							continue;
+						}
+					}
+					neighborHousehold = findHouseHoldFromUUID(uuid);
+				}
+				else{
+					throw new IllegalArgumentException("error in VertexHouseholdEquivalent");
+				}
+				//Household neighborHousehold = findVertexHouseholdEquivalent(edge.getOpposite(node));
+				neighborArray.add(neighborHousehold);
+			}
+			if(neighborArray.isEmpty()){
+				System.out.println("Error in neighbor array");
+				return null;
+			}
 		}
 		return neighborArray;
 	}
-	
-//TODO: figure out how to keep this from returning null in any instance.
-	
-	//what's happening is that after the network is done iterating, it automatically returns null
-	private Household findVertexHouseholdEquivalent(Node node){
-		String vertexName = "vert" + node;
-		
-		for (Household hh: network){
-			String comparedName = hh.getVertexName();
 
-			if(!comparedName.equalsIgnoreCase(vertexName)){
-				continue;
-			}
-			else if(comparedName.equalsIgnoreCase(vertexName)){
-				UUID uuid = hh.getUUID();
-				Household retHousehold = findHouseHoldFromUUID(uuid);
-			}
-			else{
-				throw new IllegalArgumentException("error in VertexHouseholdEquivalent");
-			}
-		}
-		return null;
-	}
-	
 	private Household findHouseHoldFromUUID(UUID uuidFind){
 		for (Household hh: network){
 			if(hh.uuid == uuidFind){
@@ -306,5 +300,5 @@ public class JaipurABM extends SimState{
 		System.out.println("findHouseholdFromUUID isn't working");
 		return null;
 	}
-	
+
 }

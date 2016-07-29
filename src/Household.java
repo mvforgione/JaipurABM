@@ -165,7 +165,6 @@ public class Household implements Steppable {
 			}
 		}
 		numNonConserversSpokenTo = networkSize - numConserversSpokenTo;
-
 		if(calculatingConserver){
 			if(numConserversSpokenTo == 0 || networkSize == 0){
 				ratio = 0.0;
@@ -174,7 +173,6 @@ public class Household implements Steppable {
 				double numConsDouble = (double)(numConserversSpokenTo);
 				ratio = numConsDouble/networkSize;
 			}
-			//           System.out.println("\tratio numCons: " + ratio);
 		}
 		else{       
 			if(numNonConserversSpokenTo == 0 || networkSize == 0){
@@ -184,14 +182,7 @@ public class Household implements Steppable {
 				double numNonConsDouble = (double)(numNonConserversSpokenTo);
 				ratio = numNonConsDouble/networkSize;
 			}
-			//            System.out.println("\tratio numNonCons: " + ratio);
-		}
-		////        System.out.println(" numFriends for " + this.getVertexName() + ": " + numConnectionsThisList
-		////                + ", numConservers in that list: " + numConservers + ", ratio: " + ratio);
-		//        System.out.println("agent " + this.vertexName + "'s network size: " + (respectedFamilyMembers.size() + closeFriends.size() + acquaintances.size()) 
-		//        		+ "\n\tnumConservers: " + numConserversSpokenTo
-		//        		+ "\n\tnumNonConservers: " + numNonConserversSpokenTo);
-		//        
+		}      
 		return ratio;      
 	}
 
@@ -311,9 +302,9 @@ public class Household implements Steppable {
 
 	protected void prepareStep(SimState state){
 		setNetworkSize();
-//		System.out.println("agent " + this.vertexName + " maxNumConnections: " + this.maxNumConnections
-//				+ " maxNumAcq: " + this.maxNumAcquaintances + " maxNumFam: " + this.maxNumFamilyMembers
-//				+ " maxNumFriends: " + this.maxNumCloseFriends);
+		//		System.out.println("agent " + this.vertexName + " maxNumConnections: " + this.maxNumConnections
+		//				+ " maxNumAcq: " + this.maxNumAcquaintances + " maxNumFam: " + this.maxNumFamilyMembers
+		//				+ " maxNumFriends: " + this.maxNumCloseFriends);
 		String graphStructure = JaipurABM.getGraphStructure();
 		if (graphStructure.equals("original")){
 			assignFamilyToAgentAtTimeStep(state.schedule.getTime());
@@ -333,6 +324,10 @@ public class Household implements Steppable {
 			for (Household hh: respectedFamilyMembers){
 				System.out.print(hh.vertexName + " ");
 			}
+		}
+		System.out.println("acquaintances for " + this.vertexName + ":");
+		for (Household hh: acquaintances){
+			System.out.print(hh.vertexName + " ");
 		}
 	}
 
@@ -486,11 +481,14 @@ public class Household implements Steppable {
 			return;
 		}
 	}
-	
+
 	public UUID getUUID(){	
 		return this.uuid;
 	}
 
-
+	public ArrayList<Household> getAcquaintances(){
+		return acquaintances;
+	}
+	
 }
 
