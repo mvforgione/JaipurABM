@@ -28,33 +28,32 @@ public class JaipurABM extends SimState{
 	//"kleinbergSmallWorldNetwork" is obviously for Kleinberg Small World
 	//add strings here as you write more code
 	private static String graphStructure = "Kleinberg small world network";
-
-	
-
-	public static int numTotalAgents = 0;
-	public static String txtFileInput;
-	//public static int jobs = 25; //number of runs needed
 	public static int jobs = 2;
-	public static int numStepsInMain = 10;
 	//public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
 	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
-	public static int currentJob = 0;
-	public static double percentageConserverCurrent = 0.0;
-	public static int population;
-	public static int numCurrentAgents = 0;
+	public static int numStepsInMain = 10;
 	public static double averageHouseholdSize = 5.1;
 	//public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/AgentPopulation.csv";
 	public static String populationCSVfile= "/Users/lizramsey/Documents/workspace/JaipurABM/src/PopTest.csv";
 	//public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/utilfxntest_cons_5_withComms_with_delta_a_7_b_3_value_test_3May2016.txt";
 	public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/testingFile.txt";
-	public static int numMonthsInYear = 12;
+	
+
+	public static int numTotalAgents = 0;
+	public static String txtFileInput;
+	//public static int jobs = 25; //number of runs needed
+
+	public static int currentJob = 0;
+	public static double percentageConserverCurrent = 0.0;
+	public static int population;
+	public static int numCurrentAgents = 0;
 	private static int vertexNumber = 0;
 	//don't forget to account for this in documentation; numAgents will say 200, for example, but there will really be 201
 
-	public static List<Household> network;
-	public static List<Household> newAgentsAtThisTimeStepOriginalNetwork;
-	ArrayList<Household> neighborArray;
-	Household neighborHousehold;
+	public static ArrayList<Household> network = new ArrayList<Household>();
+	public static ArrayList<Household> newAgentsAtThisTimeStepOriginalNetwork = new ArrayList<Household>();
+	ArrayList<Household> neighborArray = new ArrayList<Household>();
+	Household neighborHousehold = new Household();
 
 
 
@@ -81,7 +80,7 @@ public class JaipurABM extends SimState{
 			state.finish();
 			numTotalAgents = 0;
 			vertexNumber = 0;
-			//network.clear();
+			network.clear();
 			//newAgentsAtThisTimeStepOriginalNetwork.clear();
 			//Household.clearAcquaintances();
 		}
@@ -255,7 +254,6 @@ public class JaipurABM extends SimState{
 		Collection<Edge> edgeCollection = node.getLeavingEdgeSet();
 		for (Edge edge: edgeCollection){
 			Node oppositeNode = edge.getOpposite(node);
-			System.out.println("node " + node.getIndex() + "'s edge.getOpposite " + oppositeNode.getIndex());
 			//find corresponding household in overall model
 			for (Household hh: network){
 				String comparedName = hh.getVertexName();
