@@ -22,7 +22,7 @@ public class Household implements Steppable {
 	private static String textFileInput;
 	protected static final int PROBABILITY_OF_FRIENDSHIP = 100; //Probability an agent will befriend another agent.
 	protected static MersenneTwisterFast rng = new MersenneTwisterFast();    //Random number generator for cycling agents during friendship assignment.
-
+ 
 	//personal attributes for each Household Agent
 	private int independentLikelihoodDFInstall;
 	private int friendLikelihoodDFInstall;
