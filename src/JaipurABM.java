@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.apache.commons.collections15.Factory;
 import org.graphstream.algorithm.generator.Generator;
+import org.graphstream.algorithm.generator.GridGenerator;
 import org.graphstream.algorithm.generator.WattsStrogatzGenerator;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -26,8 +27,7 @@ public class JaipurABM extends SimState{
 	//graphStructure acts as the seed to determine which social network to implement
 	//"original" is for network broken down by friends, acquaintances, and families, selected randomly
 	//"kleinbergSmallWorldNetwork" is obviously for Kleinberg Small World
-	//add strings here as you write more code
-	private static String graphStructure = "Kleinberg small world network";
+	public static String graphStructure = "Kleinberg small world network";
 	public static int jobs = 2;
 	//public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
 	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
@@ -35,9 +35,8 @@ public class JaipurABM extends SimState{
 	public static double averageHouseholdSize = 5.1;
 	//public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/AgentPopulation.csv";
 	public static String populationCSVfile= "/Users/lizramsey/Documents/workspace/JaipurABM/src/PopTest.csv";
-	//public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/utilfxntest_cons_5_withComms_with_delta_a_7_b_3_value_test_3May2016.txt";
-	public static String outputFileName = "/Users/lizramsey/Documents/workspace/JaipurABM/GeneratedTXTs/testingFile.txt";
-	 
+	public static String outputFileName;
+	public static String dataSourceFile;
 
 	public static int numTotalAgents = 0;
 	public static String txtFileInput;
@@ -63,6 +62,7 @@ public class JaipurABM extends SimState{
 
 	public static void main(String[] args) {
 		SimState state = new JaipurABM(System.currentTimeMillis());
+		scanInputCSV.readInData(dataSourceFile);
 		for(int job = 0; job < jobs; job++){
 			System.out.println("JOB NUMBER " + job);
 			state.schedule.clear();
@@ -105,8 +105,9 @@ public class JaipurABM extends SimState{
 				Graph KBSWgraph = generateKleinbergSmallWorldSocialNetwork();
 				createSocialNetwork(KBSWgraph);
 			}
-			else if(graphStructure.equalsIgnoreCase("some other network")){
-				//call some other network, continue this for as many networks as you have
+			else if(graphStructure.equalsIgnoreCase("cellular automata network")){
+				Graph cellularAutomataGraph = generateCellularAutomataNetwork();
+				//createSocialNetwork(cellularAutomataGraph);
 			}
 			else{
 				System.out.println("no network structure identified, exiting");
@@ -115,6 +116,24 @@ public class JaipurABM extends SimState{
 
 		}
 		schedule.scheduleRepeating(0.1, dc); //puts DataCollector on schedule
+	}
+
+	private Graph generateCellularAutomataNetwork() {
+		// TODO: set up network
+		Graph graph = new SingleGraph("grid");
+		Generator gen = new GridGenerator();
+		
+		gen.addSink(graph);
+		gen.begin();
+		//TODO: update this to create number of actual existing number of agents
+		for(int i = 0; i < 10; i++){
+			gen.nextEvents();
+		}
+		//TODO: test how the connections between the grid agents set themselves up (agent numbers and connections)
+		gen.end();
+		
+		graph.display(false);
+		return null;
 	}
 
 	/*
@@ -187,7 +206,6 @@ public class JaipurABM extends SimState{
 		for (int i = 0; i < jobs; i ++){	
 			PrintStream outPrint = null;
 			try{
-				//	outputFileName = outputFileName;
 				outPrint = new PrintStream(new File(outputFileName));
 			}
 			catch (FileNotFoundException e){

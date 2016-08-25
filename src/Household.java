@@ -17,6 +17,8 @@ import ec.util.MersenneTwisterFast;
  */
 
 public class Household implements Steppable {
+	//values updated by scanned docs
+	
 	public static ArrayList<Household> houseHoldAgents = new ArrayList<>();
 	public static double percentConservers = 5;
 	private static String textFileInput;
@@ -29,7 +31,6 @@ public class Household implements Steppable {
 	protected int familyLikelihoodDFInstall;
 	public int householdSize;
 	public boolean isConserver;
-	public boolean hasDualFlushToilets;
 	protected String vertexName;
 	public double monthlyDemand;
 	public int maxNumFamilyMembers;
@@ -62,7 +63,6 @@ public class Household implements Steppable {
 		friendLikelihoodDFInstall = ValueGenerator.getValueLikert(3.12, 1.43);//friend likelihood DFI, from survey
 		familyLikelihoodDFInstall = ValueGenerator.getValueLikert(3.8, 1.48);//family likelihood DFI, from survey
 		householdSize = ValueGenerator.getValueWithRange(5.1, 2.61, 1, 20);//household size, from 2011 census
-		hasDualFlushToilets = true;
 		isConserver = Household.generateConservationStatus();
 		vertexName	= "vert" + vertexNumber;
 		//TODO: remove this after testing
