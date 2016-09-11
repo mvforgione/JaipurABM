@@ -27,20 +27,20 @@ public class JaipurABM extends SimState{
 	//graphStructure acts as the seed to determine which social network to implement
 	//"original" is for network broken down by friends, acquaintances, and families, selected randomly
 	//"kleinbergSmallWorldNetwork" is obviously for Kleinberg Small World
-	public static String graphStructure = "Kleinberg small world network";
-	public static int jobs = 2;
+	public static String graphStructure;
+	public static int jobs;
 	//public static int numStepsInMain = 240;	//Update this for each run as you add more timesteps in excel doc 
 	//also,should be double the number of lines of data in excel file, since datacollector needs its own step
-	public static int numStepsInMain = 10;
+	public static int numStepsInMain;
 	public static double averageHouseholdSize = 5.1;
-	//public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/AgentPopulation.csv";
-	public static String populationCSVfile= "/Users/lizramsey/Documents/workspace/JaipurABM/src/PopTest.csv";
+	public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/AgentPopulation.csv";
+	//public static String populationCSVfile = "/Users/lizramsey/Documents/workspace/JaipurABM/src/PopTest.csv";
 	public static String outputFileName;
-	public static String dataSourceFile;
-
+	public static String dataSourceFile ="/Users/lizramsey/Documents/workspace/JaipurABM/src/Initialization_Parameters.txt";
+	public static int numStepsSkippedToUpdateFunctions;
+	
 	public static int numTotalAgents = 0;
 	public static String txtFileInput;
-	//public static int jobs = 25; //number of runs needed
 
 	public static int currentJob = 0;
 	public static double percentageConserverCurrent = 0.0;
@@ -51,7 +51,7 @@ public class JaipurABM extends SimState{
 
 	public static ArrayList<Household> network = new ArrayList<Household>();
 	public static ArrayList<Household> newAgentsAtThisTimeStepOriginalNetwork = new ArrayList<Household>();
-	ArrayList<Household> neighborArray = new ArrayList<Household>();
+	static ArrayList<Household> neighborArray = new ArrayList<Household>();
 	Household neighborHousehold = new Household();
 
 
@@ -63,15 +63,19 @@ public class JaipurABM extends SimState{
 	public static void main(String[] args) {
 		SimState state = new JaipurABM(System.currentTimeMillis());
 		scanInputCSV.readInData(dataSourceFile);
+		System.out.println("num skipped steps " + numStepsSkippedToUpdateFunctions);
 		for(int job = 0; job < jobs; job++){
 			System.out.println("JOB NUMBER " + job);
 			state.schedule.clear();
 			state.setJob(job);
 			currentJob++;
 			state.start();
-			txtFileInput = "Utility Function Values\ta value\t" + UtilityFunctionOriginal.a + "\ta prime value\t" + UtilityFunctionOriginal.aPrime +
-					"\tb value\t" + UtilityFunctionOriginal.b + "\tb prime value\t" + UtilityFunctionOriginal.bPrime + "\n\n";
-			txtFileInput =  txtFileInput + "Job Number\tTime Step\tModel Population\t# of Agents\tRatio of Conservers to Total Agents\tTotal Demand\n";		//create .txt file for outputting results
+			txtFileInput = "Utility Function Values\ta value\t" + UtilityFunction.a + "\ta prime value\t" + UtilityFunction.aPrime +
+					"\tb value\t" + UtilityFunction.b + "\tb prime value\t" + UtilityFunction.bPrime + "\texogenous term\t" + 
+					UtilityFunction.exogenousTerm + "\tbeta\t" + ProbabilityOfBehavior.beta + "\tdelta\t" + 
+					UtilityFunction.parameterDelta + "\tNum skipped steps to update utility\t" + numStepsSkippedToUpdateFunctions + 
+					"\n\n";
+			txtFileInput =  txtFileInput + "Job Number\tTime Step\tModel Population\t# of Agents\t# of Conservers\tRatio of Conservers to Total Agents\tTotal Demand\n";		//create .txt file for outputting results
 			do
 				if (!state.schedule.step(state)) {
 					break;
@@ -80,9 +84,14 @@ public class JaipurABM extends SimState{
 			state.finish();
 			numTotalAgents = 0;
 			vertexNumber = 0;
+			newAgentsAtThisTimeStepOriginalNetwork.clear();
+			for (Household hh : network){
+				hh.clearAllNetworks();
+			}
 			network.clear();
-			//newAgentsAtThisTimeStepOriginalNetwork.clear();
-			//Household.clearAcquaintances();
+			neighborArray.clear();
+			System.out.println("NETWORKS ALL CLEARED");
+
 		}
 		txtFileInput = txtFileInput + DataCollector.txtFileInput;
 		generateTxtFile(txtFileInput);
@@ -105,10 +114,6 @@ public class JaipurABM extends SimState{
 				Graph KBSWgraph = generateKleinbergSmallWorldSocialNetwork();
 				createSocialNetwork(KBSWgraph);
 			}
-			else if(graphStructure.equalsIgnoreCase("cellular automata network")){
-				Graph cellularAutomataGraph = generateCellularAutomataNetwork();
-				//createSocialNetwork(cellularAutomataGraph);
-			}
 			else{
 				System.out.println("no network structure identified, exiting");
 				System.exit(1);
@@ -118,23 +123,6 @@ public class JaipurABM extends SimState{
 		schedule.scheduleRepeating(0.1, dc); //puts DataCollector on schedule
 	}
 
-	private Graph generateCellularAutomataNetwork() {
-		// TODO: set up network
-		Graph graph = new SingleGraph("grid");
-		Generator gen = new GridGenerator();
-		
-		gen.addSink(graph);
-		gen.begin();
-		//TODO: update this to create number of actual existing number of agents
-		for(int i = 0; i < 10; i++){
-			gen.nextEvents();
-		}
-		//TODO: test how the connections between the grid agents set themselves up (agent numbers and connections)
-		gen.end();
-		
-		graph.display(false);
-		return null;
-	}
 
 	/*
     Create number of agents at [n] time step and store in agent array.
@@ -160,7 +148,6 @@ public class JaipurABM extends SimState{
 
 				schedule.scheduleRepeating(double_i, newAgent);
 				numTotalAgents++;
-				System.out.println("numTotalAgents test: " + numTotalAgents);
 			}
 		}
 	}

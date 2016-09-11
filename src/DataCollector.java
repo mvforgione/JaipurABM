@@ -45,7 +45,7 @@ public class DataCollector implements Steppable{
 		//	    		"     ratio: " + ratio);
 
 		updateTxtFile(JaipurABM.getCurrentJob() + "\t" + state.schedule.getTime() + "\t" +
-				modelPopulation + "\t" + numAgents + "\t" + ratio +"\t"+ CumulativeDemand +"\n");
+				modelPopulation + "\t" + numAgents + "\t" + numConservers + "\t" + ratio +"\t"+ CumulativeDemand +"\n");
 		System.out.println(state.schedule.getTime() + "\t" + CumulativeDemand);
 		numAgents = 0;
 		CumulativeDemand = 0.0;
