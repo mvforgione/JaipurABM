@@ -179,5 +179,79 @@ public class scanInputCSV{
 		if (fileScanner.hasNextDouble()){
 			Household.percentConservers = fileScanner.nextDouble();
 		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextDouble()){
+			double aAndBPrime = fileScanner.nextDouble();
+			UtilityFunction.a = aAndBPrime;
+			UtilityFunction.bPrime = aAndBPrime;
+			System.out.println("a and b prime: " + UtilityFunction.a + " " + UtilityFunction.bPrime);
+		}
+		if (fileScanner.hasNextLine()){
+			String test = fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			String test = fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextDouble()){
+			double bAndAPrime = fileScanner.nextDouble();
+			UtilityFunction.b = bAndAPrime;
+			UtilityFunction.aPrime = bAndAPrime;
+			System.out.println("b and a prime: " + UtilityFunction.b + " " + UtilityFunction.aPrime);
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}		
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextDouble()){
+			UtilityFunction.exogenousTerm = fileScanner.nextDouble();
+			System.out.println("exog term found");
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextDouble()){
+			ProbabilityOfBehavior.beta = fileScanner.nextDouble();
+			System.out.println("beta: " + ProbabilityOfBehavior.beta);
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextDouble()){
+			UtilityFunction.parameterDelta = fileScanner.nextDouble();
+			System.out.println("parameter delta: " + UtilityFunction.parameterDelta);
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+		if (fileScanner.hasNextLine()){
+			fileScanner.nextLine();
+		}
+
+		if (fileScanner.hasNextInt()){
+			JaipurABM.numStepsSkippedToUpdateFunctions = fileScanner.nextInt();
+			
+		}
 	}
 }
